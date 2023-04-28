@@ -1,4 +1,4 @@
-import BlankLayout from "@/components/blank-layout";
+import BlankLayout from "@/layouts/blank-layout";
 import {NextPageWithLayout} from "@/pages/_app";
 import {ReactElement} from "react";
 

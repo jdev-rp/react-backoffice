@@ -3,4 +3,14 @@ const nextConfig = {
   reactStrictMode: true,
 }
 
-module.exports = nextConfig
+module.exports = {
+  redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/login',
+        permanent: true
+      }
+    ]
+  }
+}

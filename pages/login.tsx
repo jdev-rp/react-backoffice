@@ -1,46 +1,60 @@
-import BlankLayout from "@/components/blank-layout";
+import BlankLayout from "@/layouts/blank-layout";
 import {NextPageWithLayout} from "@/pages/_app";
 import {ReactElement} from "react";
-import {Button, Col, Form, Input, Row} from "antd";
+import {Avatar, Button, Col, Form, FormInstance, Input, Row} from "antd";
 import {Content} from "antd/lib/layout/layout";
 import FormItem from "antd/lib/form/FormItem";
 import Password from "antd/lib/input/Password";
 import Link from "next/link";
-
-
-const onFinish = (values: any) => {
-    console.log(values)
-}
+import {LockOutlined, UserOutlined} from "@ant-design/icons";
 
 const Page: NextPageWithLayout = () => {
+
+    const onFinish = (values: any) => {
+
+        console.log(values);
+    }
+
     return (
-        <Content>
-            <Row justify={"start"}>
-                <Col span={8} offset={7} style={{marginTop: "15%"}}>
+        <Content style={{maxWidth: '400px', width: '100%', margin: "15% auto"}}>
+            <Row>
+                <Col span={24} style={{textAlign: 'center'}}>
+                    <Avatar size={100} icon={<UserOutlined/>} />
+                </Col>
+            </Row>
+            <Row style={{marginTop : 15}}>
+                <Col span={24}>
                     <Form
-                        labelCol={{span: 10}}
-                        wrapperCol={{span:14}}
-                        labelAlign="right"
-                        colon={false}
+                        className="login-form"
                         onFinish={onFinish}
                     >
                         <FormItem
-                            label="userId"
+                            name="userId"
                             rules={[{ required: true, message: '아이디를 입력하세요'}]}
                         >
-                            <Input/>
+                            <Input
+                                prefix={<UserOutlined className="site-form-item-icon" />}
+                                placeholder="Username"
+                            />
                         </FormItem>
                         <FormItem
-                            label="password"
+                            name="password"
                             rules={[{ required: true, message: '비밀번호를 입력하세요' }]}
                         >
-                            <Password/>
+                            <Input
+                                prefix={<LockOutlined className="site-form-item-icon" />}
+                                type="password"
+                                placeholder="Password"
+                            />
                         </FormItem>
-                        <FormItem label=" ">
-                            <Button type="text" htmlType="submit">로그인</Button>
-                            <Link href={`/signup`} style={{float: "right"}}>회원가입</Link>
+                        <FormItem>
+                            <Button type="primary" htmlType="submit">로그인</Button>
+                            <Link href={`/signup`} style={{float: "right"}}>
+                                <Button type="text">
+                                    회원가입
+                                </Button>
+                            </Link>
                         </FormItem>
-
                     </Form>
                 </Col>
             </Row>

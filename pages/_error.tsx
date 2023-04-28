@@ -1,5 +1,5 @@
 import {ReactElement} from "react";
-import BlankLayout from "@/components/blank-layout";
+import BlankLayout from "@/layouts/blank-layout";
 import {Content} from "antd/lib/layout/layout";
 import {Col, Row} from "antd";
 
