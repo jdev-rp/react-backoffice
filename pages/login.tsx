@@ -1,23 +1,21 @@
 import BlankLayout from "@/layouts/blank-layout";
 import {NextPageWithLayout} from "@/pages/_app";
-import {ReactElement, useRef} from "react";
-import {Avatar, Button, Col, Form, FormInstance, Input, InputRef, message, Row} from "antd";
+import {ReactElement} from "react";
+import {Avatar, Button, Col, Form, Input, message, Row} from "antd";
 import {Content} from "antd/lib/layout/layout";
 import FormItem from "antd/lib/form/FormItem";
-import Password from "antd/lib/input/Password";
 import Link from "next/link";
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
-import {existByUserIdAndPassword, existNotByUserIdAndPassword} from "@/storage/userStorage";
+import {existNotByUserIdAndPassword} from "@/storage/userStorage";
+import {useRouter} from "next/router";
 
 const Page: NextPageWithLayout = () => {
-
+    const router = useRouter();
     const [messageApi, contextHolder] = message.useMessage();
 
-    const onFinish = (user: any) => {
+    const onFinish = async (user: any) => {
 
         const existNot = existNotByUserIdAndPassword(user);
-
-        console.log(existNot);
 
         if(existNot) {
             return messageApi.open({
@@ -26,7 +24,7 @@ const Page: NextPageWithLayout = () => {
             });
         }
 
-
+        await router.push('/service/users');
     }
 
     return (
