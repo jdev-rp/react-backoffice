@@ -1,17 +1,22 @@
 import BlankLayout from "@/layouts/blank-layout";
 import {NextPageWithLayout} from "@/pages/_app";
 import {ReactElement} from "react";
-import {Button, Col, Divider, Form, Input, Row} from "antd";
+import {Button, Col, DatePicker, Divider, Form, Input, Row} from "antd";
 import {Content} from "antd/lib/layout/layout";
 import FormItem from "antd/lib/form/FormItem";
 import Link from "next/link";
 import {passwordRegex, passwordRegexMessage, userIdRegex, userIdRegexMessage} from "@/utils/regex";
 import Title from "antd/lib/typography/Title";
+import {existByUserId, pushByUser} from "@/storage/userStorage";
+import {useRouter} from "next/router";
 
 const Page: NextPageWithLayout = () => {
+    const router = useRouter();
 
-    const onFinish = (values: any) => {
-        localStorage.getItem('users')
+    const onFinish = async (user: any) => {
+        user.birthday = user.birthday.format('YYYYMMDD');
+        await pushByUser(user)
+        await router.push('/signup-complete');
     }
 
     return (
@@ -32,10 +37,17 @@ const Page: NextPageWithLayout = () => {
                             name="userId"
                             rules={[
                                 { required: true, message: '아이디를 입력하세요'},
-                                { pattern: userIdRegex, message: userIdRegexMessage}
+                                { pattern: userIdRegex, message: userIdRegexMessage},
+                                ({}) => ({
+                                    validator(rule, value) {
+                                        if(value && existByUserId(value)) return Promise.reject(new Error('중복되는 아이디가 존재합니다'));
+
+                                        return Promise.resolve();
+                                    }
+                                })
                             ]}
                         >
-                            <Input/>
+                            <Input maxLength={15}/>
                         </FormItem>
                         <FormItem
                             label="패스워드"
@@ -43,6 +55,25 @@ const Page: NextPageWithLayout = () => {
                             rules={[
                                 { required: true, message: '비밀번호를 입력하세요' },
                                 { pattern: passwordRegex, message: passwordRegexMessage}
+                            ]}
+                        >
+                            <Input
+                                type="password"
+                            />
+                        </FormItem>
+                        <FormItem
+                            label="패스워드 재확인"
+                            name="passwordConfirm"
+                            dependencies={['password']}
+                            rules={[
+                                { required: true, message: '비밀번호 재확인을 입력하세요' },
+                                ({ getFieldValue}) => ({
+                                    validator(rule, value) {
+                                        if(value && getFieldValue('password') !== value) return Promise.reject(new Error('패스워드가 일치하지 않습니다'))
+
+                                        return Promise.resolve();
+                                    }
+                                })
                             ]}
                         >
                             <Input
@@ -61,7 +92,7 @@ const Page: NextPageWithLayout = () => {
                             name="birthday"
                             rules={[{ required: true, message: '생년월일을 선택하세요' }]}
                         >
-                            <Input/>
+                            <DatePicker format={'YYYY-MM-DD'} block/>
                         </FormItem>
                         <FormItem>
                             <Button type="primary" htmlType="submit" block>회원가입</Button>
