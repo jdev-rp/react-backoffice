@@ -5,7 +5,7 @@ import FormItem from "antd/lib/form/FormItem";
 import {RangePicker} from "rc-picker";
 import {getUsers} from "@/storage/userStorage";
 import {ColumnsType} from "antd/lib/table";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 
 const Page: NextPageWithLayout = () => {
@@ -49,15 +49,20 @@ const Page: NextPageWithLayout = () => {
         }
     ];
 
-    function onFinish() {
-        console.log('dd');
+    function onFinish(searchValues: any) {
+        console.log(searchValues)
     }
 
     function onReset() {
         form.resetFields();
     }
 
-    const data: DataType[] = getUsers();
+    let [data, setData] = useState([]);
+
+    useEffect(() => {
+        setData(getUsers());
+    }, []);
+
 
     return (
         <main>
@@ -69,21 +74,22 @@ const Page: NextPageWithLayout = () => {
             >
                 <Row gutter="10">
                     <Col span={6}>
-                        <FormItem label='생년월일'>
-                            <Input/>
-                            {/*<RangePicker format="YYYY-MM-DD" />*/}
+                        <FormItem label='생년월일' name="birthday">
+                            <DatePicker/>
+                            <DatePicker/>
                         </FormItem>
                     </Col>
-                    <Col span={6}>
-                        <FormItem
-                            label={<Select
+                    <Col span={6} style={{display: 'flex', flexDirection: 'row'}}>
+                        <FormItem  name="searchType">
+                            <Select
                                 defaultValue="userId"
                                 options={[
                                     {label: '아이디', value: 'userId'},
                                     {label: '닉네임', value: 'nickname'},
                                 ]}
-                            ></Select>}
-                        >
+                            ></Select>
+                        </FormItem>
+                        <FormItem name="searchValue" style={{ marginLeft: 5, width: '100%' }}>
                             <Input type="search"/>
                         </FormItem>
                     </Col>
