@@ -28,7 +28,7 @@ const Page: NextPageWithLayout = () => {
     }
 
     return (
-        <Content style={{maxWidth: '400px', width: '100%', margin: "15% auto"}}>
+        <section style={{maxWidth: '400px', width: '100%', margin: "15% auto"}}>
             {contextHolder}
             <Row>
                 <Col span={24} style={{textAlign: 'center'}}>
@@ -74,7 +74,7 @@ const Page: NextPageWithLayout = () => {
                     </Form>
                 </Col>
             </Row>
-        </Content>
+        </section>
     )
 }
 

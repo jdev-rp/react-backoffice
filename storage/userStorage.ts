@@ -1,5 +1,3 @@
-import users from "@/pages/users";
-
 interface User {
     readonly userId: string
     password: string

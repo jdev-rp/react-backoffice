@@ -8,7 +8,7 @@ import Link from "next/link";
 const Page: NextPageWithLayout = () => {
 
     return (
-        <Content>
+        <main>
             <Result
                 status="success"
                 title="회원가입완료!"
@@ -20,7 +20,7 @@ const Page: NextPageWithLayout = () => {
             >
 
             </Result>
-        </Content>
+        </main>
     )
 }
 

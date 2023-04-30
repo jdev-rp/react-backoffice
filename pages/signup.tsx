@@ -20,7 +20,7 @@ const Page: NextPageWithLayout = () => {
     }
 
     return (
-        <Content style={{maxWidth: '400px', width: '100%', margin: "10% auto"}}>
+        <section style={{maxWidth: '400px', width: '100%', margin: "10% auto"}}>
             <Row>
                 <Col span={24}>
                     <Title level={2}>회원가입</Title>
@@ -106,7 +106,7 @@ const Page: NextPageWithLayout = () => {
                     <Link href="/login">로그인 이동</Link>
                 </Col>
             </Row>
-        </Content>
+        </section>
     )
 }
 
