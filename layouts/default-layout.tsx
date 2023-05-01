@@ -1,13 +1,20 @@
-import {Button, Layout, Menu, theme} from "antd";
+import {Button, Layout, Menu, Space, theme} from "antd";
 import {Content, Footer, Header} from "antd/lib/layout/layout";
 import Sider from "antd/lib/layout/Sider";
 import {gray} from "@ant-design/colors";
 import {MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined} from "@ant-design/icons";
 import {useState} from "react";
+import {useRouter} from "next/router";
 
 export default function DefaultLayout({ children }) {
     const [collapsed, setCollapsed] = useState(false);
     const { token: {colorBgContainer}, } = theme.useToken();
+
+    const router = useRouter();
+
+    function onClickLogout() : void {
+        router.push('/login');
+    }
 
     return (
         <Layout hasSider>
@@ -40,7 +47,16 @@ export default function DefaultLayout({ children }) {
                 />
             </Sider>
             <Layout>
-                <Header style={{ padding: 0, background: colorBgContainer}}/>
+                <Header style={{ padding: 0, background: colorBgContainer, display: 'flex', alignItems: 'center', justifyContent: 'right'}} >
+                    <Space
+                        style={{ marginRight: 10}}
+                    >
+                        <Button
+                            type="default"
+                            onClick={onClickLogout}
+                        >로그아웃</Button>
+                    </Space>
+                </Header>
                 <Content
                     style={{
                         margin: '24px 16px 0',

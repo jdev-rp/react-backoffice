@@ -1,15 +1,14 @@
 import {NextPageWithLayout} from "@/pages/_app";
-import {Content} from "antd/lib/layout/layout";
 import {Button, Col, DatePicker, Form, Input, Row, Select, Space, Table, theme} from "antd";
 import FormItem from "antd/lib/form/FormItem";
-import {RangePicker} from "rc-picker";
-import {getUsers} from "@/storage/userStorage";
+import {getUsers, removeByUserId} from "@/storage/userStorage";
 import {ColumnsType} from "antd/lib/table";
 import {useEffect, useState} from "react";
 
 
 const Page: NextPageWithLayout = () => {
 
+    const { RangePicker } = DatePicker;
     const { token } = theme.useToken();
     const [form] = Form.useForm();
     const [expand, setExpand] = useState(false);
@@ -19,6 +18,7 @@ const Page: NextPageWithLayout = () => {
         borderRadius: token.borderRadiusLG,
         padding: 24,
         width: '100%',
+        marginTop: 10
     };
 
     interface DataType {
@@ -49,23 +49,61 @@ const Page: NextPageWithLayout = () => {
         }
     ];
 
-    function onFinish(searchValues: any) {
-        console.log(searchValues)
+    let [data, setData] = useState([]);
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+        setSelectedRowKeys(newSelectedRowKeys);
+    };
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
+
+
+    useEffect(() => {
+        setData(getUsers());
+    }, []);
+
+    function onClickCreate(): void {
+
+    }
+
+    function onClickRemove(): void {
+        selectedRowKeys.forEach(key => {
+            removeByUserId(key);
+        })
+        setData(getUsers());
     }
 
     function onReset() {
         form.resetFields();
     }
 
-    let [data, setData] = useState([]);
+    function onFinish(searchValues: any) {
 
-    useEffect(() => {
-        setData(getUsers());
-    }, []);
+        const startDay: string = searchValues?.birthday ? searchValues?.birthday[0].format('YYYYMMDD') : '',
+            endDay: string = searchValues?.birthday ? searchValues?.birthday[1].format('YYYYMMDD') : '',
+            searchType: string = searchValues?.searchType,
+            searchValue: string = searchValues?.searchValue;
+
+        const users = getUsers().filter((obj) => {
+            if(startDay && startDay > obj.birthday) return false;
+            if(endDay && endDay < obj.birthday) return true;
+            if(searchType === 'userId' && searchValue && obj?.userId.indexOf(searchValue) < 0) return true;
+            if(searchType === 'nickname' && searchValue && obj?.nickname.indexOf(searchValue) < 0) return true;
+            return true;
+        });
+
+        setData(users);
+    }
 
 
     return (
         <main>
+            <Space style={{display: 'flex', justifyContent: 'end'}}>
+                <Button onClick={onClickCreate}>등록</Button>
+                <Button onClick={onClickRemove}>삭제</Button>
+            </Space>
             <Form
                 form={form}
                 style={formStyle}
@@ -75,14 +113,12 @@ const Page: NextPageWithLayout = () => {
                 <Row gutter="10">
                     <Col span={6}>
                         <FormItem label='생년월일' name="birthday">
-                            <DatePicker/>
-                            <DatePicker/>
+                            <RangePicker/>
                         </FormItem>
                     </Col>
                     <Col span={6} style={{display: 'flex', flexDirection: 'row'}}>
-                        <FormItem  name="searchType">
+                        <FormItem  name="searchType" initialValue="userId">
                             <Select
-                                defaultValue="userId"
                                 options={[
                                     {label: '아이디', value: 'userId'},
                                     {label: '닉네임', value: 'nickname'},
@@ -109,6 +145,8 @@ const Page: NextPageWithLayout = () => {
                    dataSource={data}
                    size={"small"}
                    bordered
+                   rowKey="userId"
+                   rowSelection={rowSelection}
                    scroll={{ y: 500}}
                    style={{marginTop: 15}}/>
         </main>

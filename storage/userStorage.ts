@@ -32,6 +32,6 @@ export function existNotByUserIdAndPassword(user: User) : boolean {
 }
 
 export function removeByUserId(userId: string) : void {
-    const users = getUsers();
+    const users = getUsers().filter(obj => obj.userId !== userId);
     localStorage.setItem('users', JSON.stringify(users))
 }
