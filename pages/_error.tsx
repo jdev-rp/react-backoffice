@@ -1,18 +1,25 @@
 import {ReactElement} from "react";
 import BlankLayout from "@/layouts/blank-layout";
 import {Content} from "antd/lib/layout/layout";
-import {Col, Row} from "antd";
+import {Col, Result, Row} from "antd";
+import Link from "next/link";
 
 function Error({ statusCode }) {
     return (
         <Content>
-            <Row>
-                <Col span={8} offset={8} style={{ marginTop: "20%", fontSize: 20, textAlign: "center" }}>
-                    {statusCode
-                        ? `An error ${statusCode} occurred on server`
-                        : 'An error occurred on client'}
-                </Col>
-            </Row>
+            <Result
+                status="error"
+                title={statusCode
+                    ? `An error ${statusCode} occurred on server`
+                    : 'An error occurred on client'}
+                subTitle="로그인 페이지로 이동하시겠습니까?"
+                extra={[
+                    <Link href="/login">로그인 페이지 이동</Link>
+                ]}
+                style={{ marginTop: "15%" }}
+            >
+
+            </Result>
         </Content>
 )
 }

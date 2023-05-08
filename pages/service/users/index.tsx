@@ -1,9 +1,12 @@
 import {NextPageWithLayout} from "@/pages/_app";
-import {Button, Col, DatePicker, Form, Input, Row, Select, Space, Table, theme} from "antd";
+import {Button, Col, DatePicker, Form, Input, Modal, Popconfirm, Row, Select, Space, Table, theme} from "antd";
 import FormItem from "antd/lib/form/FormItem";
-import {getUsers, removeByUserId} from "@/storage/userStorage";
+import {existByUserId, getUsers, pushByUser, removeByUserId} from "@/storage/userStorage";
 import {ColumnsType} from "antd/lib/table";
 import {useEffect, useState} from "react";
+import {QuestionCircleOutlined} from "@ant-design/icons";
+import {passwordRegex, passwordRegexMessage, userIdRegex, userIdRegexMessage} from "@/utils/regex";
+import UserModalForm from "@/components/users/userModalForm";
 
 
 const Page: NextPageWithLayout = () => {
@@ -64,11 +67,26 @@ const Page: NextPageWithLayout = () => {
         setData(getUsers());
     }, []);
 
-    function onClickCreate(): void {
+    const [open, setOpen] = useState(false);
+    const [isUpdate, setUpdate] = useState(false);
 
+    const onClickCreate = () => {
+        setOpen(true);
+        setUpdate(false);
     }
 
-    function onClickRemove(): void {
+    const onClickUpdate = () => {
+        setOpen(true);
+        setUpdate(true);
+    }
+
+    const onCancle = () => {
+        console.log('ddd');
+        setOpen(false);
+    }
+
+
+    function onConfirmRemove(): void {
         selectedRowKeys.forEach(key => {
             removeByUserId(key);
         })
@@ -88,9 +106,9 @@ const Page: NextPageWithLayout = () => {
 
         const users = getUsers().filter((obj) => {
             if(startDay && startDay > obj.birthday) return false;
-            if(endDay && endDay < obj.birthday) return true;
-            if(searchType === 'userId' && searchValue && obj?.userId.indexOf(searchValue) < 0) return true;
-            if(searchType === 'nickname' && searchValue && obj?.nickname.indexOf(searchValue) < 0) return true;
+            if(endDay && endDay < obj.birthday) return false;
+            if(searchType === 'userId' && searchValue && obj?.userId.indexOf(searchValue) < 0) return false;
+            if(searchType === 'nickname' && searchValue && obj?.nickname.indexOf(searchValue) < 0) return false;
             return true;
         });
 
@@ -102,7 +120,20 @@ const Page: NextPageWithLayout = () => {
         <main>
             <Space style={{display: 'flex', justifyContent: 'end'}}>
                 <Button onClick={onClickCreate}>등록</Button>
-                <Button onClick={onClickRemove}>삭제</Button>
+                <UserModalForm
+                    open={open}
+                    setOpen={setOpen}
+                    onCancle={onCancle}
+                    isUpdate={isUpdate}
+                ></UserModalForm>
+                <Popconfirm
+                    title="사용자 삭제"
+                    description="사용자를 삭제하시겠습니까?"
+                    icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                    onConfirm={onConfirmRemove}
+                >
+                    <Button>삭제</Button>
+                </Popconfirm>
             </Space>
             <Form
                 form={form}
