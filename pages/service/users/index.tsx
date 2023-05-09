@@ -73,15 +73,14 @@ const Page: NextPageWithLayout = () => {
     }, []);
 
 
-
     const userModalFormRef = forwardRef(UserModalForm);
 
     const onClickCreate = () => {
         userModalFormRef.current.openModal(false);
     }
 
-    const onClickUpdate = () => {
-        userModalFormRef.current.openModal(true);
+    const onClickUpdate = (userId: string) => {
+        userModalFormRef.current.openModal(true, userId);
     }
 
     const onOkOrCancel = () => {
@@ -185,6 +184,11 @@ const Page: NextPageWithLayout = () => {
                    rowSelection={rowSelection}
                    scroll={{ y: 800}}
                    style={{marginTop: 15}}
+                   onRow={(data, rowIdx) => {
+                        return {
+                            onClick: (event) => onClickUpdate(data.userId)
+                        };
+                  }}
             />
         </main>
     )
