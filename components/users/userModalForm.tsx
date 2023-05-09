@@ -1,28 +1,60 @@
 import {DatePicker, Form, Input, Modal} from "antd";
 import FormItem from "antd/lib/form/FormItem";
 import {passwordRegex, passwordRegexMessage, userIdRegex, userIdRegexMessage} from "@/utils/regex";
-import {existByUserId} from "@/storage/userStorage";
+import {existByUserId, pushByUser} from "@/storage/userStorage";
+import {forwardRef, useImperativeHandle, useState} from "react";
+import dayjs from "dayjs";
 
-const userModalForm = ({open, setOpen, onCancle, isUpdate}) => {
+
+const userModalForm = forwardRef(({onOk, onCancel}, ref) => {
+
     const [form] = Form.useForm();
+    const [open, setOpen] = useState(false);
+    const [isUpdate, setUpdate] = useState(false);
 
-    const onOk = () => {
-        form.submit();
+    const onFinish = async (values: any) => {
+        values.birthday = values.birthday.format('YYYYMMDD');
+        pushByUser(values)
+        form.resetFields();
         setOpen(false);
+        onOk();
     }
+
+    const onOkFirst = async () => {
+        form.submit();
+    }
+
+    const onCancelFirst = () => {
+        form.resetFields();
+        setOpen(false);
+        onCancel();
+    }
+
+
+    useImperativeHandle(
+        ref, () => ({
+            openModal: (isUpdateParam: boolean, userId?: string) => {
+                setOpen(true);
+                setUpdate(isUpdateParam);
+            }
+        }));
+    
+
+
 
     return (
         <Modal
             title="사용자 등록/수정"
             open={open}
-            onOk={onOk}
-            onCancle={onCancle}
+            onOk={onOkFirst}
+            onCancel={onCancelFirst}
             okText='저장'
             cancelText='닫기'
         >
             <Form
                 layout={"vertical"}
                 form={form}
+                onFinish={onFinish}
             >
                 <FormItem
                     label="아이디"
@@ -84,11 +116,17 @@ const userModalForm = ({open, setOpen, onCancle, isUpdate}) => {
                     name="birthday"
                     rules={[{ required: true, message: '생년월일을 선택하세요' }]}
                 >
-                    <DatePicker format={'YYYY-MM-DD'} block/>
+                    <DatePicker
+                        format={'YYYY-MM-DD'}
+                        showToday={false}
+                        disabledDate={(day) => {
+                            return dayjs().isBefore(day);
+                        }}
+                    />
                 </FormItem>
             </Form>
         </Modal>
     )
-}
+})
 
 export default userModalForm;

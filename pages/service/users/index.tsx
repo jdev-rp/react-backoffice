@@ -3,10 +3,11 @@ import {Button, Col, DatePicker, Form, Input, Modal, Popconfirm, Row, Select, Sp
 import FormItem from "antd/lib/form/FormItem";
 import {existByUserId, getUsers, pushByUser, removeByUserId} from "@/storage/userStorage";
 import {ColumnsType} from "antd/lib/table";
-import {useEffect, useState} from "react";
+import {forwardRef, useEffect, useRef, useState} from "react";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {passwordRegex, passwordRegexMessage, userIdRegex, userIdRegexMessage} from "@/utils/regex";
 import UserModalForm from "@/components/users/userModalForm";
+import dayjs from "dayjs";
 
 
 const Page: NextPageWithLayout = () => {
@@ -31,24 +32,28 @@ const Page: NextPageWithLayout = () => {
         birthday: string;
     }
 
+    const onCellClick = (record, rowIdx) => {
+        console.log(record, rowIdx);
+    }
+
     const columns: ColumnsType<DataType>= [
         {
             title: '아이디',
             dataIndex: 'userId',
             key: 'userId',
-            align: 'center'
+            align: 'center',
         },
         {
             title: '닉네임',
             dataIndex: 'nickname',
             key: 'nickname',
-            align: 'center'
+            align: 'center',
         },
         {
             title: '생년월일',
             dataIndex: 'birthday',
             key: 'birthday',
-            align: 'center'
+            align: 'center',
         }
     ];
 
@@ -67,22 +72,20 @@ const Page: NextPageWithLayout = () => {
         setData(getUsers());
     }, []);
 
-    const [open, setOpen] = useState(false);
-    const [isUpdate, setUpdate] = useState(false);
+
+
+    const userModalFormRef = forwardRef(UserModalForm);
 
     const onClickCreate = () => {
-        setOpen(true);
-        setUpdate(false);
+        userModalFormRef.current.openModal(false);
     }
 
     const onClickUpdate = () => {
-        setOpen(true);
-        setUpdate(true);
+        userModalFormRef.current.openModal(true);
     }
 
-    const onCancle = () => {
-        console.log('ddd');
-        setOpen(false);
+    const onOkOrCancel = () => {
+        onFinish();
     }
 
 
@@ -115,16 +118,14 @@ const Page: NextPageWithLayout = () => {
         setData(users);
     }
 
-
     return (
         <main>
             <Space style={{display: 'flex', justifyContent: 'end'}}>
                 <Button onClick={onClickCreate}>등록</Button>
                 <UserModalForm
-                    open={open}
-                    setOpen={setOpen}
-                    onCancle={onCancle}
-                    isUpdate={isUpdate}
+                    onOk={onOkOrCancel}
+                    onCancel={onOkOrCancel}
+                    ref={userModalFormRef}
                 ></UserModalForm>
                 <Popconfirm
                     title="사용자 삭제"
@@ -144,7 +145,11 @@ const Page: NextPageWithLayout = () => {
                 <Row gutter="10">
                     <Col span={6}>
                         <FormItem label='생년월일' name="birthday">
-                            <RangePicker/>
+                            <RangePicker
+                                disabledDate={(day) => {
+                                    return dayjs().isBefore(day);
+                                }}
+                            />
                         </FormItem>
                     </Col>
                     <Col span={6} style={{display: 'flex', flexDirection: 'row'}}>
@@ -178,8 +183,9 @@ const Page: NextPageWithLayout = () => {
                    bordered
                    rowKey="userId"
                    rowSelection={rowSelection}
-                   scroll={{ y: 500}}
-                   style={{marginTop: 15}}/>
+                   scroll={{ y: 800}}
+                   style={{marginTop: 15}}
+            />
         </main>
     )
 }

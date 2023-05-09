@@ -9,6 +9,7 @@ import {passwordRegex, passwordRegexMessage, userIdRegex, userIdRegexMessage} fr
 import Title from "antd/lib/typography/Title";
 import {existByUserId, pushByUser} from "@/storage/userStorage";
 import {useRouter} from "next/router";
+import dayjs from "dayjs";
 
 const Page: NextPageWithLayout = () => {
     const router = useRouter();
@@ -92,7 +93,13 @@ const Page: NextPageWithLayout = () => {
                             name="birthday"
                             rules={[{ required: true, message: '생년월일을 선택하세요' }]}
                         >
-                            <DatePicker format={'YYYY-MM-DD'} block/>
+                            <DatePicker
+                                format={'YYYY-MM-DD'}
+                                showToday={false}
+                                disabledDate={(day) => {
+                                    return dayjs().isBefore(day);
+                                }}
+                            />
                         </FormItem>
                         <FormItem>
                             <Button type="primary" htmlType="submit" block>회원가입</Button>
