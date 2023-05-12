@@ -97,11 +97,12 @@ const Page: NextPageWithLayout = () => {
 
     function onReset() {
         form.resetFields();
+        onFinish();
     }
 
     function onFinish(searchValues: any) {
-        const startDay: string = searchValues?.birthday[0] ? searchValues?.birthday[0].format('YYYYMMDD') : '',
-            endDay: string = searchValues?.birthday[1] ? searchValues?.birthday[1].format('YYYYMMDD') : '',
+        const startDay: string = searchValues?.birthday && searchValues?.birthday[0] ? searchValues?.birthday[0].format('YYYYMMDD') : '',
+            endDay: string = searchValues?.birthday && searchValues?.birthday[1] ? searchValues?.birthday[1].format('YYYYMMDD') : '',
             searchType: string = searchValues?.searchType,
             searchValue: string = searchValues?.searchValue;
 
