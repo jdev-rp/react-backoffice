@@ -32,10 +32,6 @@ const Page: NextPageWithLayout = () => {
         birthday: string;
     }
 
-    const onCellClick = (record, rowIdx) => {
-        console.log(record, rowIdx);
-    }
-
     const columns: ColumnsType<DataType>= [
         {
             title: '아이디',
@@ -129,10 +125,12 @@ const Page: NextPageWithLayout = () => {
                 <Popconfirm
                     title="사용자 삭제"
                     description="사용자를 삭제하시겠습니까?"
+                    okText="예"
+                    cancelText="아니오"
                     icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
                     onConfirm={onConfirmRemove}
                 >
-                    <Button>삭제</Button>
+                    <Button disabled={selectedRowKeys.length === 0}>삭제</Button>
                 </Popconfirm>
             </Space>
             <Form
@@ -142,7 +140,7 @@ const Page: NextPageWithLayout = () => {
                 labelAlign="right"
             >
                 <Row gutter="10">
-                    <Col span={6}>
+                    <Col span={24} md={6}>
                         <FormItem label='생년월일' name="birthday">
                             <RangePicker
                                 allowEmpty={[true, true]}
@@ -152,7 +150,7 @@ const Page: NextPageWithLayout = () => {
                             />
                         </FormItem>
                     </Col>
-                    <Col span={6} style={{display: 'flex', flexDirection: 'row'}}>
+                    <Col span={24} md={6} style={{display: 'flex', flexDirection: 'row'}}>
                         <FormItem  name="searchType" initialValue="userId">
                             <Select
                                 options={[
@@ -162,7 +160,7 @@ const Page: NextPageWithLayout = () => {
                             ></Select>
                         </FormItem>
                         <FormItem name="searchValue" style={{ marginLeft: 5, width: '100%' }}>
-                            <Input type="search"/>
+                            <Input type="search" allowClear/>
                         </FormItem>
                     </Col>
                 </Row>
