@@ -1,7 +1,7 @@
 import {DatePicker, Form, Input, Modal} from "antd";
 import FormItem from "antd/lib/form/FormItem";
 import {passwordRegex, passwordRegexMessage, userIdRegex, userIdRegexMessage} from "@/utils/regex";
-import {existByUserId, pushByUser} from "@/storage/userStorage";
+import {existByUserId, getUser, getUsers, pushByUser, updateUser} from "@/storage/userStorage";
 import {forwardRef, useImperativeHandle, useState} from "react";
 import dayjs from "dayjs";
 
@@ -14,7 +14,7 @@ const userModalForm = forwardRef(({onOk, onCancel}, ref) => {
 
     const onFinish = async (values: any) => {
         values.birthday = values.birthday.format('YYYYMMDD');
-        pushByUser(values)
+        isUpdate ? updateUser(values) : pushByUser(values);
         form.resetFields();
         setOpen(false);
         onOk();
@@ -33,9 +33,18 @@ const userModalForm = forwardRef(({onOk, onCancel}, ref) => {
 
     useImperativeHandle(
         ref, () => ({
-            openModal: (isUpdateParam: boolean, userId?: string) => {
+            openCreateModal: () => {
                 setOpen(true);
-                setUpdate(isUpdateParam);
+                setUpdate(false);
+            },
+            openUpdateModal: (userId: string) => {
+                setOpen(true);
+                setUpdate(true);
+
+                for(let [key, value] of Object.entries(getUser(userId))) {
+                    if(key === 'birthday') value = dayjs(value, 'YYYYMMDD');
+                    form.setFieldValue(key, value);
+                }
             }
         }));
     
@@ -64,18 +73,19 @@ const userModalForm = forwardRef(({onOk, onCancel}, ref) => {
                         { pattern: userIdRegex, message: userIdRegexMessage},
                         ({}) => ({
                             validator(rule, value) {
-                                if(value && existByUserId(value)) return Promise.reject(new Error('중복되는 아이디가 존재합니다'));
+                                if(!isUpdate && value && existByUserId(value)) return Promise.reject(new Error('중복되는 아이디가 존재합니다'));
 
                                 return Promise.resolve();
                             }
                         })
                     ]}
                 >
-                    <Input maxLength={15}/>
+                    <Input maxLength={15} disabled={isUpdate}/>
                 </FormItem>
                 <FormItem
                     label="패스워드"
                     name="password"
+                    hidden={isUpdate}
                     rules={[
                         { required: true, message: '비밀번호를 입력하세요' },
                         { pattern: passwordRegex, message: passwordRegexMessage}
@@ -88,6 +98,7 @@ const userModalForm = forwardRef(({onOk, onCancel}, ref) => {
                 <FormItem
                     label="패스워드 재확인"
                     name="passwordConfirm"
+                    hidden={isUpdate}
                     dependencies={['password']}
                     rules={[
                         { required: true, message: '비밀번호 재확인을 입력하세요' },

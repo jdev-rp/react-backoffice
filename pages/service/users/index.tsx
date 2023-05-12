@@ -76,11 +76,11 @@ const Page: NextPageWithLayout = () => {
     const userModalFormRef = forwardRef(UserModalForm);
 
     const onClickCreate = () => {
-        userModalFormRef.current.openModal(false);
+        userModalFormRef.current.openCreateModal();
     }
 
     const onClickUpdate = (userId: string) => {
-        userModalFormRef.current.openModal(true, userId);
+        userModalFormRef.current.openUpdateModal(userId);
     }
 
     const onOkOrCancel = () => {
@@ -100,9 +100,8 @@ const Page: NextPageWithLayout = () => {
     }
 
     function onFinish(searchValues: any) {
-
-        const startDay: string = searchValues?.birthday ? searchValues?.birthday[0].format('YYYYMMDD') : '',
-            endDay: string = searchValues?.birthday ? searchValues?.birthday[1].format('YYYYMMDD') : '',
+        const startDay: string = searchValues?.birthday[0] ? searchValues?.birthday[0].format('YYYYMMDD') : '',
+            endDay: string = searchValues?.birthday[1] ? searchValues?.birthday[1].format('YYYYMMDD') : '',
             searchType: string = searchValues?.searchType,
             searchValue: string = searchValues?.searchValue;
 
@@ -145,6 +144,7 @@ const Page: NextPageWithLayout = () => {
                     <Col span={6}>
                         <FormItem label='생년월일' name="birthday">
                             <RangePicker
+                                allowEmpty={[true, true]}
                                 disabledDate={(day) => {
                                     return dayjs().isBefore(day);
                                 }}
