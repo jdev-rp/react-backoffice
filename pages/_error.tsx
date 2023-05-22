@@ -4,7 +4,7 @@ import {Content} from "antd/lib/layout/layout";
 import {Col, Result, Row} from "antd";
 import Link from "next/link";
 
-function Error({ statusCode }) {
+function Error({ statusCode }: { statusCode: number}) {
     return (
         <Content>
             <Result

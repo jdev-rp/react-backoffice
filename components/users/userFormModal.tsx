@@ -6,7 +6,7 @@ import {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import dayjs from "dayjs";
 
 
-const userFormModal = forwardRef((props, ref) => {
+const userFormModal = forwardRef(({onOk, onCancel}, ref) => {
 
     const [form] = Form.useForm();
     const [open, setOpen] = useState(false);
@@ -17,15 +17,17 @@ const userFormModal = forwardRef((props, ref) => {
         isUpdate ? updateUser(values) : pushByUser(values);
         form.resetFields();
         setOpen(false);
+        onOk();
     }
 
-    const onOkFirst = () => {
+    const onOkFirst = () : void => {
         form.submit();
     }
 
-    const onCancelFirst = () => {
+    const onCancelFirst = () : void => {
         form.resetFields();
         setOpen(false);
+        onCancel();
     }
 
 
@@ -57,7 +59,6 @@ const userFormModal = forwardRef((props, ref) => {
             open={open}
             onOk={onOkFirst}
             onCancel={onCancelFirst}
-            ref={ref}
             okText='저장'
             cancelText='닫기'
         >

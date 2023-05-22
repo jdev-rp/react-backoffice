@@ -6,7 +6,7 @@ import {MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined} from "@ant-design/ic
 import {useState} from "react";
 import {useRouter} from "next/router";
 
-export default function DefaultLayout({ children }) {
+export default function DefaultLayout({ children } : { children: React.ReactNode}) {
     const [collapsed, setCollapsed] = useState(false);
     const { token: {colorBgContainer}, } = theme.useToken();
 
@@ -46,7 +46,6 @@ export default function DefaultLayout({ children }) {
                     onClick={onSelectMenu}
                     items={[{
                         key: '1',
-                        keyPath: '.dsfsd',
                         icon: <UserOutlined />,
                         label: '사용자 관리',
                     }]}
