@@ -1,34 +1,33 @@
-import {DatePicker, Form, Input, Modal} from "antd";
+import {DatePicker, Form, Input, Modal, ModalProps} from "antd";
 import FormItem from "antd/lib/form/FormItem";
 import {passwordRegex, passwordRegexMessage, userIdRegex, userIdRegexMessage} from "@/utils/regex";
 import {existByUserId, getUser, getUsers, pushByUser, updateUser} from "@/storage/userStorage";
-import {forwardRef, useImperativeHandle, useState} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 import dayjs from "dayjs";
 
 
-const userModalForm = forwardRef(({onOk, onCancel}, ref) => {
+const userFormModal = forwardRef((props, ref) => {
 
     const [form] = Form.useForm();
     const [open, setOpen] = useState(false);
     const [isUpdate, setUpdate] = useState(false);
 
-    const onFinish = async (values: any) => {
+    const onFinish = (values: any) => {
         values.birthday = values.birthday.format('YYYYMMDD');
         isUpdate ? updateUser(values) : pushByUser(values);
         form.resetFields();
         setOpen(false);
-        onOk();
     }
 
-    const onOkFirst = async () => {
+    const onOkFirst = () => {
         form.submit();
     }
 
     const onCancelFirst = () => {
         form.resetFields();
         setOpen(false);
-        onCancel();
     }
+
 
 
     useImperativeHandle(
@@ -36,6 +35,7 @@ const userModalForm = forwardRef(({onOk, onCancel}, ref) => {
             openCreateModal: () => {
                 setOpen(true);
                 setUpdate(false);
+
             },
             openUpdateModal: (userId: string) => {
                 setOpen(true);
@@ -53,10 +53,11 @@ const userModalForm = forwardRef(({onOk, onCancel}, ref) => {
 
     return (
         <Modal
-            title="사용자 등록/수정"
+            title={isUpdate ? "사용자 수정" : "사용자 등록"}
             open={open}
             onOk={onOkFirst}
             onCancel={onCancelFirst}
+            ref={ref}
             okText='저장'
             cancelText='닫기'
         >
@@ -138,6 +139,8 @@ const userModalForm = forwardRef(({onOk, onCancel}, ref) => {
             </Form>
         </Modal>
     )
-})
+});
 
-export default userModalForm;
+userFormModal.displayName = "UserFormModal";
+
+export default userFormModal;

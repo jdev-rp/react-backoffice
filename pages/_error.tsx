@@ -14,7 +14,7 @@ function Error({ statusCode }) {
                     : 'An error occurred on client'}
                 subTitle="로그인 페이지로 이동하시겠습니까?"
                 extra={[
-                    <Link href="/login">로그인 페이지 이동</Link>
+                    <Link key="login" href="/login">로그인 페이지 이동</Link>
                 ]}
                 style={{ marginTop: "15%" }}
             >

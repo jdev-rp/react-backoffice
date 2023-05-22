@@ -6,8 +6,9 @@ import {Content} from "antd/lib/layout/layout";
 import FormItem from "antd/lib/form/FormItem";
 import Link from "next/link";
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
-import {existNotByUserIdAndPassword} from "@/storage/userStorage";
+import {existNotByUserIdAndPassword, getUser} from "@/storage/userStorage";
 import {useRouter} from "next/router";
+import {cookies} from "next/headers";
 
 const Page: NextPageWithLayout = () => {
     const router = useRouter();
@@ -24,6 +25,8 @@ const Page: NextPageWithLayout = () => {
             });
         }
 
+        const userToken = JSON.stringify(getUser(user.userId))
+        document.cookie = `token=${userToken}`
         await router.push('/service/users');
     }
 

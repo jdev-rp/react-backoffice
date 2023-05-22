@@ -14,7 +14,7 @@ const Page: NextPageWithLayout = () => {
                 title="회원가입완료!"
                 subTitle="회원가입 완료후 로그인 페이지 이동하시겠습니까?"
                 extra={[
-                    <Link href="/login">로그인 페이지 이동</Link>
+                    <Link key="login" href="/login">로그인 페이지 이동</Link>
                 ]}
                 style={{ marginTop: "15%" }}
             >

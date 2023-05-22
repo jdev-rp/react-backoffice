@@ -3,11 +3,12 @@ import {Button, Col, DatePicker, Form, Input, Modal, Popconfirm, Row, Select, Sp
 import FormItem from "antd/lib/form/FormItem";
 import {existByUserId, getUsers, pushByUser, removeByUserId} from "@/storage/userStorage";
 import {ColumnsType} from "antd/lib/table";
-import {forwardRef, useEffect, useRef, useState} from "react";
+import {createRef, forwardRef, useEffect, useRef, useState} from "react";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {passwordRegex, passwordRegexMessage, userIdRegex, userIdRegexMessage} from "@/utils/regex";
-import UserModalForm from "@/components/users/userModalForm";
+import UserModalForm from "@/components/users/userFormModal";
 import dayjs from "dayjs";
+import UserFormModal from "@/components/users/userFormModal";
 
 
 const Page: NextPageWithLayout = () => {
@@ -69,14 +70,14 @@ const Page: NextPageWithLayout = () => {
     }, []);
 
 
-    const userModalFormRef = forwardRef(UserModalForm);
+    const userFormModalRef = useRef(null);
 
     const onClickCreate = () => {
-        userModalFormRef.current.openCreateModal();
+        userFormModalRef.current.openCreateModal();
     }
 
     const onClickUpdate = (userId: string) => {
-        userModalFormRef.current.openUpdateModal(userId);
+        userFormModalRef.current.openUpdateModal(userId);
     }
 
     const onOkOrCancel = () => {
@@ -120,8 +121,8 @@ const Page: NextPageWithLayout = () => {
                 <UserModalForm
                     onOk={onOkOrCancel}
                     onCancel={onOkOrCancel}
-                    ref={userModalFormRef}
-                ></UserModalForm>
+                    ref={userFormModalRef}
+                    />
                 <Popconfirm
                     title="사용자 삭제"
                     description="사용자를 삭제하시겠습니까?"
@@ -157,7 +158,7 @@ const Page: NextPageWithLayout = () => {
                                     {label: '아이디', value: 'userId'},
                                     {label: '닉네임', value: 'nickname'},
                                 ]}
-                            ></Select>
+                                />
                         </FormItem>
                         <FormItem name="searchValue" style={{ marginLeft: 5, width: '100%' }}>
                             <Input type="search" allowClear/>

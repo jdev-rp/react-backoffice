@@ -13,12 +13,17 @@ export default function DefaultLayout({ children }) {
     const router = useRouter();
 
     function onClickLogout() : void {
+        document.cookie += '=; max-age=-1;';
         router.push('/login');
+    }
+
+    function onSelectMenu() : any {
     }
 
     return (
         <Layout hasSider>
             <Sider
+                theme='light'
                 breakpoint='lg'
                 collapsedWidth='0'
             >
@@ -26,9 +31,8 @@ export default function DefaultLayout({ children }) {
                     style={{
                         height: 32,
                         margin: 16,
-                        background: 'rgba(255, 255, 255, 0.2)',
+                        background: 'lightgray',
                         display: 'flex',
-                        color: 'lightgray',
                         justifyContent: 'center',
                         alignItems: 'center'
                     }}
@@ -36,13 +40,15 @@ export default function DefaultLayout({ children }) {
                     백오피스
                 </div>
                 <Menu
-                    theme='dark'
+                    theme='light'
                     mode='inline'
                     defaultSelectedKeys={['1']}
+                    onClick={onSelectMenu}
                     items={[{
                         key: '1',
+                        keyPath: '.dsfsd',
                         icon: <UserOutlined />,
-                        label: '사용자 관리'
+                        label: '사용자 관리',
                     }]}
                 />
             </Sider>
