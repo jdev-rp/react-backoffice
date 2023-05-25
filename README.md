@@ -5,5 +5,6 @@
 * javascript
 * typescript
 * react
-* nextjs
+* nextjs(SSR)
 * antdesign
+* aws
